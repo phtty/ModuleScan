@@ -1,0 +1,29 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+			"cwd": "${workspaceRoot}",
+			"type": "cortex-debug",
+			"request": "launch",
+			"name": "CMSIS-DAP",
+			"servertype": "openocd",
+			"executable": "build/Debug/${workspaceFolderBasename}.elf",
+			"runToEntryPoint": "main",
+			"configFiles": [
+				"interface/cmsis-dap.cfg",
+				"target/stm32f4x.cfg"
+			],
+            // "postStartSessionCommands": [
+            //     "mem 0x10000000 0x1000FFFF rw"
+            // ],
+			"svdFile": "D:/WorkSpace/SVD/STM32F407.svd",
+			"liveWatch": {
+				"enabled": true,
+				"samplesPerSecond": 10
+			},
+		},
+    ]
+}

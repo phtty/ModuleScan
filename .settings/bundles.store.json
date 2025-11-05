@@ -1,0 +1,48 @@
+{
+  "bundles": [
+    {
+      "name": "cmake",
+      "version": "^4.0.1+st.3"
+    },
+    {
+      "name": "ninja",
+      "version": "1.13.1+st.1"
+    },
+    {
+      "name": "st-arm-clang-hybrid",
+      "version": "^19.1.6+st.2"
+    },
+    {
+      "name": "st-arm-clangd",
+      "version": "^19.1.2+st.3"
+    },
+    {
+      "name": "gnu-gdb-for-stm32",
+      "version": "13.3.1+st.10"
+    },
+    {
+      "name": "programmer",
+      "version": "2.20.0"
+    },
+    {
+      "name": "rtos-proxy",
+      "version": "0.17.0+st.3"
+    },
+    {
+      "name": "pack-manager",
+      "version": "0.3.12"
+    },
+    {
+      "name": "cube-cmsis-scanner",
+      "version": "1.1.3"
+    },
+    {
+      "name": "node",
+      "version": "20.19.4+st.1"
+    },
+    {
+      "name": "pack-manager-snapshot",
+      "version": "2025.8.6"
+    }
+  ]
+}

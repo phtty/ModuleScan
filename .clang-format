@@ -1,0 +1,25 @@
+BasedOnStyle: LLVM
+# AccessModifierOffset: -4
+IndentWidth: 4
+TabWidth: 4
+
+AlignConsecutiveMacros: Consecutive
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Never
+
+BraceWrapping:
+  AfterFunction: true
+
+BreakBeforeBraces: Custom
+BreakConstructorInitializers: AfterColon
+
+ColumnLimit: 128
+IndentPPDirectives: BeforeHash    # 关键修改：预处理器指令不缩进
+IndentExternBlock: false
+IndentCaseLabels: true            # 关键修改：case 语句缩进
+KeepEmptyLinesAtTheStartOfBlocks: false
+PointerAlignment: Left
+ReflowComments: false
+SpacesInContainerLiterals: false
