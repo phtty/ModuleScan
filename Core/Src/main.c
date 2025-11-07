@@ -97,35 +97,33 @@ int main(void)
     MX_TIM4_Init();
     /* USER CODE BEGIN 2 */
     init_hub75();
-    // HAL_TIM_Base_Start_IT(&htim3);
+    HAL_TIM_Base_Start_IT(&htim3);
     HAL_TIM_Base_Start_IT(&htim4);
 
-    SEGGER_RTT_printf(0, "pixel_map: %d\n", pixel_map[0]);
+    // SEGGER_RTT_printf(0, "pixel_map: %d\n", pixel_map[0]);
 
     point_order_test(black, DISRAM_SIZE, 0);
-    pixel_map[16] = green;
-    convert_pixelmap();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
         // handle_key();
-        // for (int i = 0; i < DISRAM_SIZE; i++) {
-        //     pixel_map[i] = green;
+        for (int i = 0; i < DISRAM_SIZE; i++) {
+            pixel_map[i] = green;
 
-        //     convert_pixelmap();
-        //     HAL_Delay(50);
+            convert_pixelmap();
+            HAL_Delay(50);
 
-        //     pixel_map[i] = black;
-        // }
+            pixel_map[i] = black;
+        }
 
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
         // HAL_TIM_Base_Stop_IT(&htim3);
         // point_order_test(green, 1, 0);
-        // HAL_Delay(50);
+        // HAL_Delay(500);
     }
 
     /* USER CODE END 3 */

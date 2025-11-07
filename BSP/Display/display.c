@@ -98,22 +98,22 @@ void convert_pixelmap(void)
     uint8_t  row_cnt = 0, col_cnt = 0;
 
     for (uint16_t map_cnt = 0; map_cnt < DISRAM_SIZE; map_cnt++) {
-        row_cnt     = map_cnt / SCREEN_PIXEL_ROW; // 屏幕的行标
-        col_cnt     = map_cnt % SCREEN_PIXEL_ROW;
-        ModuelGroup = row_cnt / 16 * 8 + row_cnt % 8; // 组标
+        // 点阵缓存的行标和列标计算
+        row_cnt = map_cnt / SCREEN_PIXEL_ROW;
+        col_cnt = map_cnt % SCREEN_PIXEL_ROW;
+        // 点阵缓存的组标计算
+        ModuelGroup = (row_cnt % 4 + row_cnt / 8 * 4) * (SCAN_LINE_PIXEL_NUM / GROUP_SIZE) + col_cnt / 8;
 
         // 在单行扫描内判断是上半行还是下半行
-        if ((row_cnt % 16) >= 8) // 上半行
-            hub75_buff[col_cnt + (col_cnt / MODULE_PIXEL_ROW * MODULE_PIXEL_ROW) + (ModuelGroup * GROUP_SIZE)] =
-                pixel_map[map_cnt];
-        else // 下半行
-            hub75_buff[col_cnt + ((col_cnt / MODULE_PIXEL_ROW + 1) * MODULE_PIXEL_ROW) + ModuelGroup * GROUP_SIZE] =
-                pixel_map[map_cnt];
+        if ((row_cnt % 8) >= 4) // 下半行的点逆序排列
+            hub75_buff[15 - col_cnt % 8 + ModuelGroup * GROUP_SIZE] = pixel_map[map_cnt];
+        else // 上半行的点顺序排列
+            hub75_buff[col_cnt % 8 + ModuelGroup * GROUP_SIZE] = pixel_map[map_cnt];
     }
 }
 
-    #define LINE_OFFSET    (scan_line * SCAN_LINE_PIXEL_NUM)
-    #define CHANNEL_OFFSET (channel_cnt * CHANNEL_PIXEL_NUM)
+    #define LINE_OFFSET    (scan_line * SCAN_LINE_PIXEL_NUM) // 像素点在扫描行的偏移
+    #define CHANNEL_OFFSET (channel_cnt * CHANNEL_PIXEL_NUM) // 像素点在通道的偏移
 /**
  * @brief 动态扫描行切换
  * 
@@ -152,35 +152,36 @@ void send_hub75_buff(void)
 
     for (int16_t line_cnt = 0; line_cnt < SCAN_LINE_PIXEL_NUM; line_cnt++) {
         for (int16_t channel_cnt = 0; channel_cnt < CHANNEL_NUM; channel_cnt++) {
+            // 取出第channel_cnt通道中，第scan_line行的第line_cnt个像素点的颜色数据
             hub75_color color_index = (hub75_color)hub75_buff[line_cnt + LINE_OFFSET + CHANNEL_OFFSET];
+            // 通过跳转表执行对应颜色通道引脚的电平变化
             color_handlers[color_index](channel_cnt);
         }
 
+        // CLK走1个脉冲，LED驱动芯片移位寄存器移位
         HUB75_CLK = 1;
         __NOP();
         __NOP();
         HUB75_CLK = 0;
     }
 
+    // 所有通道的第scan_line扫描行数据发送完毕，控制LED驱动芯片将数据放入输出锁存器
+    // 在多行扫描中为原子操作，需将OE保持除能
     NVIC_DisableIRQ(TIM4_IRQn);
     HUB75_OE = 1;
     scan_channel(scan_line); // 扫描行切换
 
-    // LE信号给一个周期，使数据从移位寄存器进入输出锁存器
+    // LE信号给一个周期，除能闩锁器一个脉冲的时间，使数据从移位寄存器进入输出锁存器
     HUB75_LAT = 1;
     __NOP();
     __NOP();
     HUB75_LAT = 0;
     NVIC_EnableIRQ(TIM4_IRQn);
 
+    // 行扫描计数自增
     scan_line++;
     if (scan_line >= MOUDLE_SCAN_LINE_NUM)
         scan_line = 0;
-
-    // LED输出信号使能
-    __NOP();
-    __NOP();
-    HUB75_OE = 0;
 }
 
 #endif // SCAN_MODE
