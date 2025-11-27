@@ -103,13 +103,14 @@ int main(void)
     // SEGGER_RTT_printf(0, "pixel_map: %d\n", pixel_map[0]);
 
     point_order_test(black, DISRAM_SIZE, 0);
+    // HUB75_C = 1;
+    // HUB75_D = 1;
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        // handle_key();
-        for (int i = 0; i < DISRAM_SIZE; i++) {
+        for (int i = SCREEN_PIXEL_ROW * 3; i < DISRAM_SIZE; i++) {
             pixel_map[i] = green;
 
             convert_pixelmap();
@@ -121,8 +122,9 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
+        // HUB75_A = 1;
         // HAL_TIM_Base_Stop_IT(&htim3);
-        // point_order_test(green, 1, 0);
+        // point_order_test(red, 1, 0);
         // HAL_Delay(500);
     }
 

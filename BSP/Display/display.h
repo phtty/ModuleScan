@@ -3,8 +3,8 @@
 
 #include "main.h"
 
-#define MODULE_PER_ROW       2  // 每行的模组数
-#define MODULE_PER_COL       1  // 每列的模组数
+#define MODULE_PER_ROW       7  // 每行的模组数
+#define MODULE_PER_COL       4  // 每列的模组数
 #define MODULE_PIXEL_ROW     32 // 模组每行的像素个数
 #define MODULE_PIXEL_COL     16 // 模组每列的像素个数
 #define MOUDLE_CHANNEL_NUM   2  // 单块模组的通道个数
@@ -41,6 +41,7 @@ typedef void (*ColorHandler)(int16_t);
 extern uint8_t pixel_map[DISRAM_SIZE];
 extern uint8_t hub75_buff[DISRAM_SIZE];
 extern uint8_t light_level;
+extern uint8_t cnt;
 
 void convert_pixelmap(void);
 void send_hub75_buff(void);

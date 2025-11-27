@@ -4,6 +4,8 @@
 uint8_t pixel_map[DISRAM_SIZE]  = {0};
 uint8_t hub75_buff[DISRAM_SIZE] = {0};
 
+static void scan_channel(uint8_t line_cnt);
+
 const ChannelStruct_TypeDef channel_red[10] = {
     {R1_GPIO_Port, R1_Pin}, {R2_GPIO_Port, R2_Pin}, {R3_GPIO_Port, R3_Pin}, {R4_GPIO_Port, R4_Pin}, {R5_GPIO_Port, R5_Pin},
     {R6_GPIO_Port, R6_Pin}, {R7_GPIO_Port, R7_Pin}, {R8_GPIO_Port, R8_Pin}, {R9_GPIO_Port, R9_Pin}, {R10_GPIO_Port, R10_Pin},
@@ -105,8 +107,8 @@ void convert_pixelmap(void)
         ModuelGroup = (row_cnt % 4 + row_cnt / 8 * 4) * (SCAN_LINE_PIXEL_NUM / GROUP_SIZE) + col_cnt / 8;
 
         // 在单行扫描内判断是上半行还是下半行
-        if ((row_cnt % 8) >= 4) // 下半行的点逆序排列
-            hub75_buff[15 - col_cnt % 8 + ModuelGroup * GROUP_SIZE] = pixel_map[map_cnt];
+        if ((row_cnt % 8) >= 4) // 下半行的点顺序排列
+            hub75_buff[col_cnt % 8 + 8 + ModuelGroup * GROUP_SIZE] = pixel_map[map_cnt];
         else // 上半行的点顺序排列
             hub75_buff[col_cnt % 8 + ModuelGroup * GROUP_SIZE] = pixel_map[map_cnt];
     }
@@ -297,7 +299,7 @@ void point_order_test(hub75_color color, int32_t num_of_point, uint8_t channel)
     HAL_NVIC_EnableIRQ(TIM4_IRQn);
 }
 
-uint8_t light_level = 1; // 亮度等级
+uint8_t light_level = 4; // 亮度等级
 /**
  * @brief 软件pwm调光
  * 
